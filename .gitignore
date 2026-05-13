@@ -1,0 +1,24 @@
+# --- macOS ---
+.DS_Store
+
+# --- Eclipse Build-Output ---
+bin/
+.settings/
+
+# --- IntelliJ IDEA ---
+.idea/
+*.iml
+out/
+
+# --- VS Code ---
+.vscode/
+
+# --- Claude Code ---
+.claude/
+
+# --- Java ---
+*.class
+*.log
+
+# --- ActiveMQ Data (falls lokal gestartet) ---
+activemq-data/

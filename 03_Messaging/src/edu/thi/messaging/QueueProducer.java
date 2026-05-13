@@ -1,0 +1,51 @@
+package edu.thi.messaging;
+
+import org.apache.activemq.ActiveMQConnection;
+import org.apache.activemq.ActiveMQConnectionFactory;
+
+import javax.jms.*;
+
+/*
+ * Example based on code delivered with ActiveMQ, located in folder:
+ *  .../apache-activemq-5.14.0/examples/openwire/java/src/main/java/example
+ */
+public class QueueProducer {
+
+    public static void main(String[] args) throws JMSException {
+        int messages = 10000;
+        int size = 256;
+
+        String DATA = "abcdefghijklmnopqrstuvwxyz";
+        String body = "";
+        for( int i=0; i < size; i ++) {
+            body += DATA.charAt(i%DATA.length());
+        }
+        
+        String user = ActiveMQConnection.DEFAULT_USER;
+        String password = ActiveMQConnection.DEFAULT_PASSWORD;
+        String url = ActiveMQConnection.DEFAULT_BROKER_URL;
+        Destination destination;
+        Connection connection = null;
+        ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(user, password, url);
+        connection = connectionFactory.createConnection();
+        connection.start();
+        Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        destination = session.createQueue("ActiveMQTestQueue3");
+        MessageProducer producer = session.createProducer(destination);
+        producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+
+        for( int i=1; i <= messages; i ++) {
+            TextMessage msg = session.createTextMessage(body);
+            msg.setIntProperty("id", i);
+            producer.send(msg);
+            if( (i % 1000) == 0) {
+                System.out.println(String.format("Sent %d messages", i));
+            }
+        }
+
+        producer.send(session.createTextMessage("SHUTDOWN"));
+        System.out.println(String.format("Sent %d messages in total", messages+1));
+        connection.close();
+    }
+
+}
