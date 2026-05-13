@@ -43,6 +43,26 @@ Queue-Namen je Demo:
   In Demo 3 simuliert der Worker bewusst einen Crash für `msgId=3`
   (`session.recover()`), um die Re-Delivery sichtbar zu machen.
 
+## Grenzen der Demos (didaktisch vereinfacht)
+
+- **Demo 1 und 2 simulieren keinen Crash** – sie laufen sichtbar 5/5
+  durch. Die Semantik steckt nur in der ACK-Reihenfolge im Code, nicht
+  im Output. Nur Demo 3 macht Re-Delivery und Cache-Hit sichtbar.
+- **Producer-seitige Retries fehlen**: schlägt `send(task)` fehl, gibt
+  es keinen automatischen Retry → Producer-Doubles werden nicht
+  behandelt (Dedup nur empfangsseitig).
+- **Persistenz nicht explizit gesetzt**: `producer.setDeliveryMode(PERSISTENT)`
+  wäre für echtes at-least-once unter Broker-Crash nötig.
+- **Idempotenz-Cache** in Demo 3 ist eine `HashMap` im RAM und übersteht
+  keinen Worker-Restart. Produktion: DB/Redis mit `msgId` als Primary Key.
+- **Keine `SESSION_TRANSACTED`-Sessions** für atomares
+  `receive + send + ack`.
+
+**Terminologie:** Demo 3 ist *nicht* „exactly-once delivery" (verteilt
+nachweislich unmöglich, Two-Generals-Problem). Korrekt: at-least-once
+Transport + idempotenter Worker = **effectively-once** Effekt (auch
+„exactly-once *processing*" genannt).
+
 ## Vorgeschlagene Ausführungsreihenfolge
 
 Für jede Demo gilt:
