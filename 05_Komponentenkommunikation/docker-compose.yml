@@ -1,0 +1,10 @@
+services:
+  wildfly:
+    build: .
+    image: ejbdemo-wildfly:latest
+    container_name: wildfly-ejbdemo
+    ports:
+      - "8080:8080"
+      - "9990:9990"
+    volumes:
+      - ./server/target/ejbdemo.war:/opt/jboss/wildfly/standalone/deployments/ejbdemo.war:ro

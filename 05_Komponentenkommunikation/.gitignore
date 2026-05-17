@@ -1,0 +1,17 @@
+# Maven
+target/
+
+# Eclipse (werden von m2e beim Import lokal erzeugt)
+.project
+.classpath
+.settings/
+
+# IntelliJ
+*.iml
+.idea/workspace.xml
+.idea/usage.statistics.xml
+.idea/shelf/
+
+# OS
+.DS_Store
+Thumbs.db
