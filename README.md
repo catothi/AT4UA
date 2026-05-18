@@ -50,6 +50,11 @@ Projektordner.
 
 ## ActiveMQ-Broker installieren & starten (nur für `03_*`)
 
+Es gibt zwei Wege, den Broker bereitzustellen. **Einer reicht aus** – wählt
+die Variante, die zu eurem Setup passt.
+
+### Variante A: Lokale Installation (Archiv entpacken)
+
 1. Apache ActiveMQ "Classic" 5.18.x von der offiziellen Seite laden:
    <https://activemq.apache.org/components/classic/download/>
 2. Archiv entpacken, z. B. nach `~/apache-activemq-5.18.7/`.
@@ -68,6 +73,71 @@ Projektordner.
 
 4. Web-Konsole prüfen: <http://localhost:8161/admin> (User/Passwort: `admin`/`admin`).
 5. Stoppen mit `./activemq stop` bzw. `activemq.bat stop`.
+
+### Variante B: Docker mit Volumes (ohne Docker Compose)
+
+Nutzt das offizielle Image `apache/activemq-classic` und legt persistente
+Volumes für Daten, Konfiguration und Logs an. So überleben Queues und
+Durable-Subscriptions ein `docker rm`.
+
+1. Image ziehen (einmalig):
+   ```bash
+   docker pull apache/activemq-classic:5.18.7
+   ```
+
+2. Named Volumes anlegen (einmalig):
+   ```bash
+   docker volume create activemq-data
+   docker volume create activemq-conf
+   docker volume create activemq-logs
+   ```
+
+3. Broker starten:
+
+   - **macOS / Linux**
+     ```bash
+     docker run -d \
+       --name activemq \
+       -p 61616:61616 \
+       -p 8161:8161 \
+       -v activemq-data:/opt/apache-activemq/data \
+       -v activemq-conf:/opt/apache-activemq/conf \
+       -v activemq-logs:/opt/apache-activemq/data/log \
+       apache/activemq-classic:5.18.7
+     ```
+   - **Windows** (PowerShell)
+     ```powershell
+     docker run -d `
+       --name activemq `
+       -p 61616:61616 `
+       -p 8161:8161 `
+       -v activemq-data:/opt/apache-activemq/data `
+       -v activemq-conf:/opt/apache-activemq/conf `
+       -v activemq-logs:/opt/apache-activemq/data/log `
+       apache/activemq-classic:5.18.7
+     ```
+
+4. Status / Logs prüfen:
+   ```bash
+   docker ps
+   docker logs -f activemq
+   ```
+
+5. Web-Konsole prüfen: <http://localhost:8161/admin> (User/Passwort: `admin`/`admin`).
+
+6. Stoppen / wieder starten / entfernen:
+   ```bash
+   docker stop activemq          # anhalten (Daten bleiben im Volume)
+   docker start activemq         # erneut starten
+   docker rm activemq            # Container löschen (Volumes bleiben!)
+   docker volume rm activemq-data activemq-conf activemq-logs   # erst hier wird der Zustand verworfen
+   ```
+
+> **Hinweis zu Pfaden im Container** (Image `apache/activemq-classic`):
+> Installation unter `/opt/apache-activemq`, Konfiguration in
+> `…/conf`, KahaDB- und Persistenzdaten in `…/data`, Logs in
+> `…/data/log`. Die Anwendungen verbinden sich – unabhängig von Variante A
+> oder B – gegen `tcp://localhost:61616`.
 
 ## Projekte in Eclipse importieren
 
