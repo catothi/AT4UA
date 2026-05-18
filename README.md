@@ -1,45 +1,54 @@
-# WI – Messaging-Beispiele (Apache ActiveMQ / JMS)
+# WI – Beispielcode zu Anwendungstechnologien für Unternehmensanwendungen
 
-Java-Beispielcode zur Vorlesung **Wirtschaftsinformatik** (THI, SS26) zum Thema
-Nachrichten-Messaging mit Apache ActiveMQ. Die Projekte sind als
-**Eclipse-Projekte** vorbereitet und können direkt importiert werden.
+Java-Beispielcode zur Vorlesung **Wirtschaftsinformatik** (THI, SS26) zu den
+Themen **Messaging (JMS/ActiveMQ)**, **Java RMI** und
+**Komponentenkommunikation (EJB/WildFly)**. Die Projekte in `03_*` und `04_*`
+sind als **Eclipse-Projekte** vorbereitet, `05_*` nutzt **Maven**.
 
 ## Repository-Struktur
 
 ```
 .
-├── 03_Messaging/      Grundlagen: Queue & Topic, Sync/Async, Durable Subscriber
-└── 03a_Messaging/     Liefer-Semantiken: at-most-once, at-least-once, Idempotenz
+├── 03_Messaging/                 Grundlagen: Queue & Topic, Sync/Async, Durable Subscriber
+├── 03a_Messaging/                Liefer-Semantiken: at-most-once, at-least-once, Idempotenz
+├── 04_RMI/                       Java RMI: Addition- und SearchCustomer-Service
+└── 05_Komponentenkommunikation/  EJB-Remote-Aufrufe via JNDI auf WildFly (Docker)
 ```
 
-Jedes Unterverzeichnis ist ein **eigenständiges Eclipse-Projekt** mit eigener
-`.project`-, `.classpath`-Datei und mitgelieferten Bibliotheken im Ordner `lib/`.
+| Projekt                          | Inhalt                                                                 | Build/Setup       |
+|----------------------------------|------------------------------------------------------------------------|-------------------|
+| `03_Messaging`                   | Producer/Consumer für Queues, Topics, asynchrone Listener, Durable Sub | Eclipse + `lib/`  |
+| `03a_Messaging`                  | 3 Demos zu Verarbeitungs-Semantiken (at-most/-least-once, idempotent)  | Eclipse + `lib/`  |
+| `04_RMI`                         | Remote Method Invocation mit `Registry` auf Port 1099                  | Eclipse, kein Lib |
+| `05_Komponentenkommunikation`    | Stateless Session Beans (`@Remote`) auf WildFly im Docker-Container    | Maven + Docker    |
 
-| Projekt          | Inhalt                                                                 |
-|------------------|------------------------------------------------------------------------|
-| `03_Messaging`   | Producer/Consumer für Queues, Topics, asynchrone Listener, Durable Sub |
-| `03a_Messaging`  | 3 Demos zu Verarbeitungs-Semantiken (at-most/-least-once, idempotent)  |
-
-Details zu den einzelnen Klassen siehe jeweilige `README.md` im Projektordner.
+Details zu den einzelnen Klassen und zum jeweiligen Setup siehe `README.md` im
+Projektordner.
 
 ## Voraussetzungen
 
-- **JDK 17** (oder neuer – ActiveMQ 5.18 benötigt mindestens Java 11)
+- **JDK 17** (für `05_Komponentenkommunikation` zwingend; für die übrigen
+  Beispiele genügt auch eine neuere LTS-Version)
 - **Eclipse IDE for Java Developers** (2023-09 oder neuer empfohlen)
   *oder* **IntelliJ IDEA** (Community oder Ultimate)
-- **Apache ActiveMQ 5.18.x** (Broker), lokal lauffähig auf
-  `tcp://localhost:61616`
+- Nur für `03_Messaging` / `03a_Messaging`: **Apache ActiveMQ 5.18.x**
+  (Broker), lokal lauffähig auf `tcp://localhost:61616`
+- Nur für `05_Komponentenkommunikation`: **Apache Maven 3.8+** und
+  **Docker** (Desktop oder Engine) mit **Docker Compose v2+**
 
-> Die Projekte sind primär als Eclipse-Projekte (`.project` / `.classpath`)
-> ausgeliefert. IntelliJ liest dieses Format ebenfalls und legt beim Import
-> automatisch eine eigene `.idea/`-Konfiguration an (per `.gitignore`
-> ausgeschlossen, also kein Konflikt mit Eclipse).
+> Die Eclipse-Projekte (`03_Messaging`, `03a_Messaging`, `04_RMI`) sind als
+> Eclipse-Projekte (`.project` / `.classpath`) ausgeliefert. IntelliJ liest
+> dieses Format ebenfalls und legt beim Import automatisch eine eigene
+> `.idea/`-Konfiguration an (per `.gitignore` ausgeschlossen, also kein
+> Konflikt mit Eclipse).
 
-> Die benötigten JAR-Dateien (`activemq-all`, `log4j-api`, `log4j-core`) sind
-> bereits in den jeweiligen `lib/`-Ordnern enthalten – es ist kein Maven/Gradle
-> nötig.
+> Für `03_Messaging` / `03a_Messaging` sind die benötigten JAR-Dateien
+> (`activemq-all`, `log4j-api`, `log4j-core`) bereits in den jeweiligen
+> `lib/`-Ordnern enthalten – es ist kein Maven/Gradle nötig. `04_RMI` kommt
+> mit der Java-Standardbibliothek aus. Lediglich `05_Komponentenkommunikation`
+> verwendet Maven (`pom.xml`).
 
-## ActiveMQ-Broker installieren & starten
+## ActiveMQ-Broker installieren & starten (nur für `03_*`)
 
 1. Apache ActiveMQ "Classic" 5.18.x von der offiziellen Seite laden:
    <https://activemq.apache.org/components/classic/download/>
@@ -65,26 +74,30 @@ Details zu den einzelnen Klassen siehe jeweilige `README.md` im Projektordner.
 1. Eclipse starten und einen Workspace auswählen.
 2. **File → Import… → General → Existing Projects into Workspace**.
 3. Bei *Select root directory* den geklonten Repo-Ordner wählen.
-4. Eclipse erkennt automatisch beide Projekte (`03_Messaging`,
-   `03a_Messaging`). Beide auswählen → **Finish**.
+4. Eclipse erkennt automatisch die Eclipse-Projekte (`03_Messaging`,
+   `03a_Messaging`, `04_RMI`). Auswählen → **Finish**.
 5. Sicherstellen, dass ein **JDK 17** als Workspace-JRE konfiguriert ist
    (*Preferences → Java → Installed JREs*). Falls Eclipse das Projekt mit
    einem anderen JRE öffnet: Rechtsklick auf Projekt → **Build Path →
    Configure Build Path → Libraries → JRE System Library → Edit**.
 
-Bibliotheken (`lib/*.jar`) werden über die mitgelieferte `.classpath`
-automatisch eingebunden – kein manuelles Hinzufügen nötig.
+Bibliotheken (`lib/*.jar`) werden bei `03_Messaging` / `03a_Messaging` über
+die mitgelieferte `.classpath` automatisch eingebunden – kein manuelles
+Hinzufügen nötig. `05_Komponentenkommunikation` wird nicht als Eclipse-Projekt,
+sondern als Maven-Projekt importiert (siehe dortige `README.md`).
 
 ## Projekte in IntelliJ IDEA importieren
 
 Da IntelliJ das Eclipse-Format (`.project` / `.classpath`) direkt lesen kann,
 funktioniert der Import in zwei Schritten – einmal pro Projekt:
 
-1. **File → Open…** und den Ordner `03_Messaging` auswählen
-   (für das zweite Projekt anschließend `03a_Messaging`).
+1. **File → Open…** und den jeweiligen Projektordner (`03_Messaging`,
+   `03a_Messaging` bzw. `04_RMI`) auswählen.
    IntelliJ erkennt die Eclipse-Metadaten und legt ein eigenes Modul an.
    - Alternativ: **File → New → Project from Existing Sources…** und im
      Dialog *Import project from external model → Eclipse* wählen.
+   - `05_Komponentenkommunikation` stattdessen direkt als Maven-Projekt
+     öffnen (IntelliJ erkennt die `pom.xml`).
 2. Nach dem Öffnen das **Project SDK** auf JDK 17 stellen:
    **File → Project Structure → Project → SDK** = `17`,
    **Language level** = `17`.
@@ -94,8 +107,8 @@ funktioniert der Import in zwei Schritten – einmal pro Projekt:
    → JARs or Directories…** → den `lib/`-Ordner auswählen.
 4. Ausführen: Rechtsklick auf eine Klasse mit `main` → **Run '…'**.
 
-Wenn beide Projekte als ein einziges IntelliJ-Workspace gewünscht sind: in
-einem davon das jeweils andere via **File → New → Module from Existing
+Wenn mehrere Projekte als ein einziges IntelliJ-Workspace gewünscht sind: in
+einem davon die jeweils anderen via **File → New → Module from Existing
 Sources…** hinzufügen.
 
 > Tipp: IntelliJ-spezifische Dateien (`.idea/`, `*.iml`) sind über
@@ -103,27 +116,32 @@ Sources…** hinzufügen.
 
 ## Beispiele ausführen
 
-1. Den ActiveMQ-Broker starten (siehe oben).
-2. Im **Package Explorer** die gewünschte Klasse mit `main`-Methode
-   auswählen.
-3. Rechtsklick → **Run As → Java Application**.
-4. Mehrere Consumer/Worker parallel starten: einfach mehrfach Run anstoßen –
-   jede Instanz erscheint in einer eigenen Konsole (Konsolen-Toolbar →
-   *Display Selected Console*).
+Die genaue Vorgehensweise unterscheidet sich pro Projekt – Details siehe
+jeweilige `README.md`. Grobe Übersicht:
 
-Typische Reihenfolge:
-
-- erst Consumer/Worker starten (warten auf Nachrichten)
-- dann Producer starten
+- **`03_Messaging` / `03a_Messaging`**: ActiveMQ-Broker starten (siehe oben),
+  dann im Package Explorer die gewünschte Klasse mit `main`-Methode per
+  Rechtsklick → **Run As → Java Application** ausführen. Typische Reihenfolge:
+  erst Consumer/Worker starten (warten auf Nachrichten), dann Producer.
+  Mehrere Consumer/Worker parallel: einfach mehrfach Run anstoßen.
+- **`04_RMI`**: pro Beispiel zuerst den Server (`AdditionServer` bzw.
+  `SearchCustomerServer`), danach den passenden Client starten. Beide Server
+  belegen Port 1099, daher nicht gleichzeitig laufen lassen.
+- **`05_Komponentenkommunikation`**: `mvn package`, dann den WildFly-Container
+  per `docker compose up` starten und anschließend den Standalone-Client
+  (`client/`) ausführen.
 
 ## Hinweise zum Code
 
-- Alle Beispiele verbinden sich gegen `tcp://localhost:61616`
-  (`ActiveMQConnection.DEFAULT_BROKER_URL`).
+- Die JMS-Beispiele (`03_*`) verbinden sich gegen `tcp://localhost:61616`
+  (`ActiveMQConnection.DEFAULT_BROKER_URL`); RMI nutzt Port `1099` auf
+  `127.0.0.1`, EJB den WildFly-Remote-Port `8080`.
 - Die JMS-API (`javax.jms.*`) ist im `activemq-all-5.18.7.jar` bereits
   enthalten.
-- Es wird bewusst auf Build-Tools (Maven/Gradle) verzichtet, damit der
-  Eclipse-Import möglichst niederschwellig bleibt.
+- Für `03_*` und `04_*` wird bewusst auf Build-Tools (Maven/Gradle)
+  verzichtet, damit der Eclipse-Import möglichst niederschwellig bleibt.
+  `05_Komponentenkommunikation` setzt aufgrund der WildFly-Abhängigkeiten
+  Maven ein.
 
 ## Lizenz / Nutzung
 
