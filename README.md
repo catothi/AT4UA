@@ -5,6 +5,24 @@ Themen **Messaging (JMS/ActiveMQ)**, **Java RMI** und
 **Komponentenkommunikation (EJB/WildFly)**. Die Projekte in `03_*` und `04_*`
 sind als **Eclipse-Projekte** vorbereitet, `05_*` nutzt **Maven**.
 
+> **Wichtig: Dieses Repository ist kein einzelnes Projekt.**
+> Der Wurzelordner `AT4UA/` enthält keine `.project`, keine `.classpath` und
+> keine `pom.xml`. Erst die **Unterordner** sind eigenständige Projekte. Wer
+> `AT4UA/` direkt in Eclipse oder IntelliJ öffnet, bekommt typischerweise
+> Fehler vom Typ *„package … nicht gefunden"*, weil weder Source-Folder noch
+> die JARs aus `lib/` erkannt werden.
+>
+> Stattdessen **jedes Unterprojekt einzeln** importieren:
+>
+> - **Eclipse:** *File → Import… → General → __Existing Projects into
+>   Workspace__* → bei *Select root directory* `AT4UA/` wählen. Eclipse
+>   durchsucht das Tree und bietet die vier Unterprojekte zur Auswahl an
+>   (nicht *Open Folder* oder *Open Projects from File System…* verwenden –
+>   damit werden die `.project`-Dateien der Unterordner ignoriert).
+> - **IntelliJ IDEA:** *File → Open…* und gezielt **einen** der Unterordner
+>   (`03_Messaging`, `03a_Messaging`, `04_RMI` oder
+>   `05_Komponentenkommunikation`) öffnen – nicht den `AT4UA/`-Wurzelordner.
+
 ## Repository-Struktur
 
 ```
