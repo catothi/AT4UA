@@ -30,7 +30,8 @@ sind als **Eclipse-Projekte** vorbereitet, `05_*` nutzt **Maven**.
 ├── 03_Messaging/                 Grundlagen: Queue & Topic, Sync/Async, Durable Subscriber
 ├── 03a_Messaging/                Liefer-Semantiken: at-most-once, at-least-once, Idempotenz
 ├── 04_RMI/                       Java RMI: Addition- und SearchCustomer-Service
-└── 05_Komponentenkommunikation/  EJB-Remote-Aufrufe via JNDI auf WildFly (Docker)
+├── 05_Komponentenkommunikation/  EJB-Remote-Aufrufe via JNDI auf WildFly (Docker)
+└── 07_Servlets/                  Einfaches Servlet (DateServlet) mit eingebettetem Jetty
 ```
 
 | Projekt                          | Inhalt                                                                 | Build/Setup       |
@@ -39,6 +40,7 @@ sind als **Eclipse-Projekte** vorbereitet, `05_*` nutzt **Maven**.
 | `03a_Messaging`                  | 3 Demos zu Verarbeitungs-Semantiken (at-most/-least-once, idempotent)  | Eclipse + `lib/`  |
 | `04_RMI`                         | Remote Method Invocation mit `Registry` auf Port 1099                  | Eclipse, kein Lib |
 | `05_Komponentenkommunikation`    | Stateless Session Beans (`@Remote`) auf WildFly im Docker-Container    | Maven + Docker    |
+| `07_Servlets`                    | `HttpServlet` (Datum/Uhrzeit) im eingebetteten Jetty-Container         | Maven, kein Server |
 
 Details zu den einzelnen Klassen und zum jeweiligen Setup siehe `README.md` im
 Projektordner.
