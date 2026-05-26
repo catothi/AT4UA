@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Feedback-Formular</title>
+    <style>
+        body      { font-family: sans-serif; background: #eef; padding: 2em; }
+        fieldset  { background: #dde6f5; padding: 1em 2em; max-width: 520px; }
+        legend    { font-weight: bold; }
+        div       { margin: 0.5em 0; }
+        label     { display: inline-block; width: 110px; }
+        input[type=text], input[type=email], input[type=number],
+        textarea  { width: 320px; }
+        textarea  { height: 80px; vertical-align: top; }
+        button    { padding: 0.3em 1.2em; }
+    </style>
+</head>
+<body>
+
+<!-- action verweist auf das im ServerMain unter /feedback registrierte Servlet.
+     method="get": die Eingaben werden als Query-String an die URL angehaengt,
+     z.B. /feedback?titel=Frau&name=Sorglos&vname=Susi&... -->
+<form id="myForm" method="get" action="feedback">
+    <fieldset>
+        <legend>Feedback-Formular</legend>
+
+        <div>
+            <label for="titel">Titel:</label>
+            <input type="text" list="titelList" name="titel" id="titel" autofocus>
+            <datalist id="titelList">
+                <option value="Herr">
+                <option value="Frau">
+                <option value="Dr.">
+                <option value="Prof.">
+                <option value="Prof. Dr.">
+            </datalist>
+        </div>
+
+        <div>
+            <label for="name">Name:</label>
+            <input type="text" name="name" id="name" placeholder="Ihr Name">
+        </div>
+
+        <div>
+            <label for="vname">Vorname:</label>
+            <input type="text" name="vname" id="vname" placeholder="Ihr Vorname">
+        </div>
+
+        <div>
+            <label for="mail">E-Mail:</label>
+            <input type="email" name="mail" id="mail" placeholder="E-Mail-Adresse">
+        </div>
+
+        <div>
+            <label for="geboren">Geburtsjahr:</label>
+            <input type="number" name="geboren" id="geboren" value="1990" min="1900" max="2025">
+        </div>
+
+        <div>
+            <label for="nachricht">Ihre Nachricht:</label>
+            <textarea name="nachricht" id="nachricht" placeholder="Hier Nachricht eingeben..."></textarea>
+        </div>
+
+        <div>
+            <input type="checkbox" name="reply" id="reply" value="reply">
+            <label for="reply">Rueckmeldung erwuenscht</label>
+        </div>
+
+        <div style="text-align:center">
+            <button name="absenden" type="submit" value="absenden">Absenden</button>
+            <button name="Reset"    type="reset">Zuruecksetzen</button>
+        </div>
+    </fieldset>
+</form>
+
+</body>
+</html>
