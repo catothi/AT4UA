@@ -85,6 +85,11 @@ public class FeedbackServlet extends HttpServlet {
         // ---------------------------------------------------------------
         out.println("<h3>Ausgefuellte Felder (alle Parameter):</h3>");
         Enumeration<String> namen = request.getParameterNames();
+
+        // request.getParameterNames() liefert eine Enumeration (= eine Art Liste/Iterator)
+// mit ALLEN Parameter-Namen, die der Browser mitgeschickt hat.
+// Beispiel-Inhalt: ["titel", "name", "vname", "mail", "geboren", "nachricht", "reply"]
+// Die Reihenfolge ist NICHT garantiert!
         while (namen.hasMoreElements()) {
             String key = namen.nextElement();
             String wert = String.join(", ", request.getParameterValues(key));
@@ -94,6 +99,15 @@ public class FeedbackServlet extends HttpServlet {
         out.println("<p><a href=\"/\">Zurueck zum Formular</a></p>");
         out.println("</body></html>");
     }
+// Enumeration funktioniert wie ein Zeiger auf eine Liste:
+//
+//  namen → [ "titel" | "name" | "vname" | "mail" | ... ]
+//               ▲
+//           Zeiger startet hier
+//
+// hasMoreElements() = "Gibt es noch ein nächstes Element?"
+// nextElement()     = "Gib mir das nächste Element und rücke den Zeiger vor"
+
 
     /** Ersetzt null durch einen Platzhalter, damit die Ausgabe lesbar bleibt. */
     private static String safe(String value) {
